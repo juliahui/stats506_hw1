@@ -1,0 +1,227 @@
+---
+title: "stats506_hw1"
+format:
+  html:
+    embed-resources: true
+editor: visual
+---
+
+```{r}
+#questions for prof
+#didn't reassign variable names until table part because i didn't notice, should i go back and change it?
+#t test part in problem 1
+
+```
+
+```{r}
+#install.packages("gt")
+#install.packages("rstatix")
+```
+
+```{r}
+library(tidyverse)
+library(gt)
+library(rstatix)
+```
+
+Problem 1 - Exploratory Analysis of Soybean Cultivars
+
+a.  import data
+
+```{r}
+#load data
+soybean <- read.csv("data.csv")
+head(soybean)
+```
+
+b.  verify information
+
+```{r}
+#number of observations in soybean dataset
+num_obs_soybean <- nrow(soybean)
+num_obs_soybean
+
+#number of unique 'vals' in Cultivar variable 
+#unique: duplicates removed, length: count of elements in unique(), 
+num_Cultivar <- length(unique(soybean$Cultivar))
+num_Cultivar
+
+#check seasons
+unique(soybean$Season)
+
+#table showing num of obs in each season
+num_obs_byseason <- soybean |> 
+  group_by(Season) |>
+  summarize("Number of observations" = n())
+num_obs_byseason
+```
+
+c.  use data to answer questions
+
+<!-- -->
+
+1.  What is the correlation between plant height (PH) and grain yield (GY)?
+
+```{r}
+#correlation between ph and gy
+ph_gy_corr <- cor(soybean$PH, soybean$GY)
+ph_gy_corr
+```
+
+The correlation between plant height and grain yield is about 0.123
+
+2.  Calculate the correlation between PH and GY separately for each season. Which season has the higher correlation?
+
+```{r}
+#correlation between ph and gy by season
+#sort by season first then do cor()
+corr_byseason <- soybean |>
+  group_by(Season) |>
+  summarize(Correlation = cor(PH, GY))
+corr_byseason
+```
+
+Season 1 has the higher absolute correlation of 0.23 compared to season 2's 0.023.
+
+3.  What is the grain yield of the soybean observation with the greatest plant height?
+
+```{r}
+#get index of tallest, get GY using index -> GY of tallest plant
+#https://r-statistics.co/base-max-in-R.html used to find which.max() func
+tallest_idx <- which.max(soybean$PH) #index  of largest val
+tallest_idx
+tallest_gy <- soybean$GY[tallest_idx]
+tallest_gy
+```
+
+The grain yield of the tallest soybean plant is 3304.678 kg/ha.
+
+4.  What percentage of observations have a thousand seed weight (MHG) greater than the overall average thousand seed weight?
+
+```{r}
+#get MHG avg
+avg_MHG <- mean(soybean$MHG)
+
+#df with number of obs above avg and % obs above avg (for MHG)
+#filter for above avg MHG then calc %
+above_avg_MHG <- soybean |>
+  filter(MHG > avg_MHG) |>
+  summarize(
+    #number of obs above avg
+    above_avg_count = n(),
+    #percentage of obs above avg
+    #original count from part b (num_obs_soybean)
+    above_avg_percent = (above_avg_count/num_obs_soybean)*100)
+above_avg_MHG
+```
+
+About 47.19% of observations have a thousand seed weight greater than the overall average.
+
+5.  Which cultivar has the highest average grain yield?
+
+```{r}
+#get df with average GY for each cultivar 
+avg_gy_bycultivar <- soybean |> 
+  group_by(Cultivar) |>
+  summarize(avg_gy = mean(GY))
+avg_gy_bycultivar
+
+#use which.max to get index of highest avg GY then use that to get cultivar
+avg_gy_bycultivar$Cultivar[which.max(avg_gy_bycultivar$avg_gy)]
+```
+
+The cultivar with the highest average grain yield is 98R30 CE.
+
+d.  create table showing averages
+
+<!-- -->
+
+1.  One row containing overall averages.
+
+```{r}
+#average all continuous variables (PH, etc)
+#https://dplyr.tidyverse.org/reference/summarise_all.html; examples for doing multiple operations at once
+soybean_overall_avgs <- soybean |>
+  #.x: current column, didn't include na.rm (these cols don't have missing vals)
+  summarize(across(-c(Season, Cultivar, Repetition), ~mean(.x)))
+soybean_overall_avgs
+```
+
+2.  One row for each season containing season-specific averages.
+
+```{r}
+#avg of cont vars by season
+#first group by season
+soybean_season_avgs <- soybean |>
+  group_by(Season) |>
+  #then get averages of each column (by season)
+  summarize(across(-c(Cultivar, Repetition), ~mean(.x)))
+soybean_season_avgs
+```
+
+Combined table:
+
+```{r}
+#create season column (put in front) for overall avgs to help with merging dfs
+soybean_overall_avgs <- soybean_overall_avgs |>
+  mutate(Season = "All", .before = "PH")
+
+#new df with overall avgs and avgs by season
+soybean_avgs_df <- rbind(soybean_overall_avgs, soybean_season_avgs)
+#change season variable values to strings for clarity
+soybean_avgs_df <- soybean_avgs_df |>
+  mutate(
+    Season = case_when(
+      Season == "All" ~ "Averages for all seasons", 
+      Season == 1 ~ "Averages for season 1",
+      Season == 2 ~ "Averages for season 2",
+      TRUE ~ NA_character_
+    )
+  )
+
+#table; got idea for making table from: https://gt.rstudio.com/, https://www.rdocumentation.org/packages/gt/versions/0.8.0/topics/gt
+soybean_avgs_table <- soybean_avgs_df |>
+  gt() |>
+  tab_header(title = "Overall and By-Season Averages") |> 
+  #learned functions for cleaning up table from: https://r-statistics.co/gt-Package.html
+  cols_label(
+    PH = "Plant Height",
+    IFP = "Insertion of first pod", 
+    NLP = "Number of stems",
+    NGP = "Number of legumes per plant",
+    NGL = "Number of grains per plant",
+    NS = "Number of grains per pod",
+    MHG = "Thousand seed weight",
+    GY = "Grain yield"
+    ) |> 
+  cols_align(align = "center")
+soybean_avgs_table
+```
+
+e.  Carry out a series of t-tests to examine whether the grain yield (GY) differs between the two seasons. State the null and the alternative hypotheses, present R output and interpret results.
+
+Overall:
+
+Null hypothesis: grain yield (GY) doesn't differ between season 1 and season 2
+
+Alternative hypothesis: grain yield (GY) differs between season 1 and season 2
+
+```{r}
+#soybean; data looks paired
+soybean |> 
+  t_test(GY ~ Season, paired = TRUE)
+```
+
+Problem 2 - Adult Income Dataset
+
+a.  
+
+```{r}
+#import data
+adult <- read_delim("adult.data")
+head(adult)
+
+#clean up 
+#adult <- adult |>
+  
+```

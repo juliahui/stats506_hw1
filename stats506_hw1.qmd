@@ -382,7 +382,11 @@ nextHappy(19)
 nextHappy(82)
 ```
 
-b. Create a function happySequence() that returns the sequence beginning at a given number. Use your nextHappy() function to perform the calculation. Be sure to provide a reasonable error on an invalid input. Be sure to document your function (see instructions above).
+b. Create a function happySequence() that returns the sequence beginning at a given number. 
+
+Starting with n, replace it with the sum of the squares of its digits, and repeat the process until n equals 1, or it loops endlessly in a cycle that does not include 1. Those numbers for which this process ends in 1 are Happy Numbers, while those that do not end in 1 are unhappy numbers.
+
+Use your nextHappy() function to perform the calculation. Be sure to provide a reasonable error on an invalid input. Be sure to document your function (see instructions above).
 
 Input: A positive integer
 
@@ -392,9 +396,47 @@ Output: A list containing:
 
 2. isHappy: A logical value indicating whether the input is a happy number (TRUE if the sequence reaches 1, FALSE otherwise). Demonstrate it works by reproducing the examples.
 ```{r}
-happySequence <- function(pos_int) {
+#' Function to see if a given value is a happy number or unhappy number and return a Happy sequence if it is a happy number
+#' 
+#' @param pos_int a positive integer 
+#' @return a logical value that indicates if the input n is a happy number or unhappy number, and a vector with the values in the Happy sequence if n is a happy number beginning with n and ending with 1
+happySequence <- function(n) {
+  #sanitize n
+  #if it's not positive or the decimal part doesn't = 0, then stop func + display error message
+  if (!is.positive(n) | (n %% 1) != 0) {
+    stop("pos_int must be a positive integer ")
+  }
   
+  #vector for sequence starting with initial input value
+  Happy_sequence = c(n)
+  
+  #if the initial input is 1, return the sequence 
+  if (n == 1) {
+    return(list(sequence = Happy_sequence, isHappy = TRUE))
+  } else {
+    #got idea for loop from happy numbers wiki page (https://en.wikipedia.org/wiki/Happy_number): check for repeating value
+    #as long as n doesn't reach 1 or repeat a value, continue with sequence 
+    while (n != 1) {
+      n <- nextHappy(n)
+      #add new value to sequence vector
+      Happy_sequence <- append(Happy_sequence, n)
+      
+      #if the latest value is equal to 1, then it's a happy number, return that and the sequence
+      if (Happy_sequence[length(Happy_sequence)] == 1) {
+        return_list = list(sequence = Happy_sequence, isHappy = TRUE)
+        return(return_list)
+      #if there's a duplicate in the sequence (minus the latest appended value), then it's an unhappy number
+      } else if (n %in% Happy_sequence[-length(Happy_sequence)]) {
+        return(isHappy = FALSE)
+      }
+    }
+  }
 }
+
+#examples
+happySequence(19)
+happySequence(4)
+happySequence(1)
 ```
 
 c. Among integers 1 through 1000: How many are happy? What percentage are happy? What starting value produces the longest happy sequence before terminating or cycling?

@@ -140,7 +140,7 @@ d.  create table showing averages
 
 ```{r}
 #average all continuous variables (PH, etc)
-#https://dplyr.tidyverse.org/reference/summarise_all.html; examples for doing multiple operations at once
+#https://dplyr.tidyverse.org/reference/summarise_all.html, https://dplyr.tidyverse.org/reference/across.html; examples for doing multiple operations at once
 soybean_overall_avgs <- soybean |>
   #.x: current column, didn't include na.rm (these cols don't have missing vals)
   summarize(across(-c(Season, Cultivar, Repetition), ~mean(.x)))
@@ -214,14 +214,103 @@ soybean |>
 
 Problem 2 - Adult Income Dataset
 
-a.  
+a, b. import data, clean variable names
 
 ```{r}
 #import data
-adult <- read_delim("adult.data")
+adult <- read_delim("adult.data", delim = ",", col_names = FALSE, show_col_types = FALSE, na = c(" ?", "NA"))
 head(adult)
 
-#clean up 
-#adult <- adult |>
-  
+#change col names 
+adult <- adult |>
+  rename(
+    Age = X1,
+    Employment_stat = X2,
+    fnlwgt = X3, #no explanation of this var's abbrv.
+    Education = X4,
+    Education_yrs = X5,
+    Marital_stat = X6, 
+    Occupation = X7,
+    Relationship = X8, 
+    Race = X9,
+    Sex = X10,
+    Capital_gain = X11,
+    Capital_loss = X12, 
+    Hrs_per_wk = X13,
+    Native_country = X14,
+    Income = X15
+  )
+head(adult)
+
+#anyNA(adult) showed there were initially no NA vals, used method below:
+#check what NA values look like using unique() (only checked cols that were said to have missing values in data description), then added variants into read_delim above
+#unique(adult$Occupation)
+#unique(adult$Employment_stat)
+#unique(adult$Native_country)
 ```
+
+c. examine missing vals, report num of missing vals for each var
+```{r}
+#across(): apply to multiple cols (can use in summarize), want to find na vals (is.na()) for each col/var, then summarize into table 
+adult_na <- adult |>
+  summarize(across(everything(), ~sum(is.na(.x))))
+adult_na
+```
+
+Employment_stat (or workclass in the original dataset) has 1836 missing values, occupation has 1843 missing values, and native_country has 583 missing values. 
+
+d. Restrict the sample to individuals working at least 10 hours per week. Confirm the sample size before and after filtering.
+```{r}
+#check sample size before filtering
+num_obs_adult <- nrow(adult)
+num_obs_adult
+
+#checking variable type since initial filter gave 0 obs
+class(adult$Hrs_per_wk) #character class -> need to change to numeric for filter() to work
+
+#filter for people working >= 10 hrs/wk
+adult_over_10 <- adult |>
+  mutate(
+    Hrs_per_wk = as.numeric(Hrs_per_wk),
+  ) |>
+  filter(Hrs_per_wk >= 10)
+  
+#check sample size after filtering 
+num_obs_over_10 <- nrow(adult_over_10)
+num_obs_over_10
+
+```
+
+Of the 32,561 observations in the original dataset, 32,103 individuals were working at least 10 hours a week. 
+
+e + f + g. Remove observations with missing values for occupation, workclass, or native country. Explain why. Eliminate any observations with: age less than 18, age greater than 90, education level identified as Preschool. Report your final sample size.
+```{r}
+#assuming we're working with adjusted dataset from part d
+adult_cleaned <- adult_over_10 |> 
+  #remove obs with missing vals
+  drop_na(Occupation, Employment_stat, Native_country) |>
+  #keep everything between 18 and 90
+  filter(Age >= 18 & Age <= 90) |>
+  #remove obs with education level = preschool 
+  filter(Education != "Preschool")
+```
+
+The description of the original dataset specified that occupation, workclass, and native country were the only three variables with missing values, and removing them helps prevent issues later down the line if we want to do data analysis. 
+
+g. Report your final sample size
+```{r}
+#check final sample size 
+final_sample_size <- nrow(adult_cleaned)
+final_sample_size
+```
+
+The final sample size is 29,568. 
+
+
+
+
+
+
+
+
+

@@ -9,19 +9,21 @@ editor: visual
 ```{r}
 #questions for prof
 #didn't reassign variable names until table part because i didn't notice, should i go back and change it?
-#t test part in problem 1
-
 ```
 
 ```{r}
 #install.packages("gt")
 #install.packages("rstatix")
+#install.packages("roxygen2")
+#install.packages("schoolmath")
 ```
 
 ```{r}
 library(tidyverse)
 library(gt)
-library(rstatix)
+library(rstatix) #t_test
+library(roxygen2)
+library(schoolmath) #is.positive
 ```
 
 Problem 1 - Exploratory Analysis of Soybean Cultivars
@@ -198,18 +200,48 @@ soybean_avgs_table <- soybean_avgs_df |>
 soybean_avgs_table
 ```
 
+
 e.  Carry out a series of t-tests to examine whether the grain yield (GY) differs between the two seasons. State the null and the alternative hypotheses, present R output and interpret results.
 
-Overall:
 
-Null hypothesis: grain yield (GY) doesn't differ between season 1 and season 2
+Null hypothesis: grain yield (GY) doesn't differ between season 1 and season 2 for cultivar X
 
-Alternative hypothesis: grain yield (GY) differs between season 1 and season 2
+Alternative hypothesis: grain yield (GY) differs between season 1 and season 2 for cultivar X
+
+X = whichever cultivar is being filtered for (noted in comments)
 
 ```{r}
-#soybean; data looks paired
-soybean |> 
+#soybean; note: data looks paired; 
+
+#74K75RSF CE
+cultivar1_test <- soybean |>
+  filter(Cultivar == "74K75RSF CE") |> 
   t_test(GY ~ Season, paired = TRUE)
+cultivar1_test
+
+#77HO111I2X - GUAPORÉ	
+cultivar2_test <- soybean |>
+  filter(Cultivar == "77HO111I2X - GUAPORÉ") |> 
+  t_test(GY ~ Season, paired = TRUE)
+cultivar2_test
+
+#79I81RSF IPRO	
+cultivar3_test <- soybean |>
+  filter(Cultivar == "79I81RSF IPRO") |> 
+  t_test(GY ~ Season, paired = TRUE)
+cultivar3_test
+
+#82HO111 IPRO - HO COXIM IPRO	
+cultivar4_test <- soybean |>
+  filter(Cultivar == "82HO111 IPRO - HO COXIM IPRO") |> 
+  t_test(GY ~ Season, paired = TRUE)
+cultivar4_test
+
+#82I78RSF IPRO
+cultivar5_test <- soybean |>
+  filter(Cultivar == "82I78RSF IPRO") |> 
+  t_test(GY ~ Season, paired = TRUE)
+cultivar5_test
 ```
 
 Problem 2 - Adult Income Dataset
@@ -306,10 +338,69 @@ final_sample_size
 
 The final sample size is 29,568. 
 
+Problem 3 - Happy Numbers
 
+a. Write a function nextHappy() that given a positive integer, computes the next value in the happy-number sequence. Be sure to provide a reasonable error on an invalid input. Be sure to document your function.
+Input: A positive integer
+Output: A positive integer
+Demonstrate it works by reproducing the examples.
+```{r}
+#' Function to compute the next value in the happy-number sequence give a positive integer
+#' 
+#' @param pos_int a positive integer 
+#' @return the next happy-number seq value 
+nextHappy <- function(pos_int) {
+  #got idea to use %%1 from here for sanity checks: https://stackoverflow.com/questions/3476782/check-if-the-number-is-integer
+  #sanitize pos_int
+  #if it's not positive or the decimal part doesn't = 0, then stop func + display error message
+  if (!is.positive(pos_int) | (pos_int %% 1) != 0) {
+    stop("pos_int must be a positive integer ")
+  }
+  
+  #empty vector to store squared values in
+  squares <- c()
+  
+  #loop through each digit of the pos_int
+  while(pos_int != 0) {
+    #get unit digit
+    digit <- pos_int %% 10
+    #square unit digit
+    digit_squared <- digit^2
+    #add squared value to vector
+    squares <- append(squares, digit_squared)
+    #update pos_int to get rid of unit digit
+    pos_int <- floor(pos_int / 10)
+  }
+  
+  #get sum of all the squared digits
+  sum_of_squares <- sum(squares)
+  #print final sum a.k.a. next happy-number sequence value
+  sum_of_squares
+}
 
+nextHappy(19)
+nextHappy(82)
+```
 
+b. Create a function happySequence() that returns the sequence beginning at a given number. Use your nextHappy() function to perform the calculation. Be sure to provide a reasonable error on an invalid input. Be sure to document your function (see instructions above).
 
+Input: A positive integer
+
+Output: A list containing: 
+
+1. sequence: A vector containing the values in the Happy sequence, beginning with the input value and ending at 1 if the number is happy.
+
+2. isHappy: A logical value indicating whether the input is a happy number (TRUE if the sequence reaches 1, FALSE otherwise). Demonstrate it works by reproducing the examples.
+```{r}
+happySequence <- function(pos_int) {
+  
+}
+```
+
+c. Among integers 1 through 1000: How many are happy? What percentage are happy? What starting value produces the longest happy sequence before terminating or cycling?
+```{r}
+
+```
 
 
 

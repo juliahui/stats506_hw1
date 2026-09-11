@@ -7,11 +7,6 @@ editor: visual
 ---
 
 ```{r}
-#questions for prof
-#didn't reassign variable names until table part because i didn't notice, should i go back and change it?
-```
-
-```{r}
 #install.packages("gt")
 #install.packages("rstatix")
 #install.packages("roxygen2")
@@ -33,6 +28,25 @@ a.  import data
 ```{r}
 #load data
 soybean <- read.csv("data.csv")
+head(soybean)
+
+#assign clearer variable names
+soybean <- soybean |>
+  rename(
+    plant_height = PH,
+    #insertion of first pod
+    first_pod_ins = IFP, 
+    #number of stems
+    num_stems = NLP,
+    #number of legumes per plant
+    num_legumes = NGP,
+    #number of grains per plant
+    num_grains = NGL,
+    #number of grains per pod
+    num_grains_pod = NS,
+    thousand_seed_weight = MHG,
+    grain_yield = GY
+  )
 head(soybean)
 ```
 
@@ -66,7 +80,7 @@ c.  use data to answer questions
 
 ```{r}
 #correlation between ph and gy
-ph_gy_corr <- cor(soybean$PH, soybean$GY)
+ph_gy_corr <- cor(soybean$plant_height, soybean$grain_yield)
 ph_gy_corr
 ```
 
@@ -79,20 +93,20 @@ The correlation between plant height and grain yield is about 0.123
 #sort by season first then do cor()
 corr_byseason <- soybean |>
   group_by(Season) |>
-  summarize(Correlation = cor(PH, GY))
+  summarize(Correlation = cor(plant_height, grain_yield))
 corr_byseason
 ```
 
-Season 1 has the higher absolute correlation of 0.23 compared to season 2's 0.023.
+Season 1 has the higher absolute correlation of 0.231 compared to season 2's 0.0227.
 
 3.  What is the grain yield of the soybean observation with the greatest plant height?
 
 ```{r}
 #get index of tallest, get GY using index -> GY of tallest plant
 #https://r-statistics.co/base-max-in-R.html used to find which.max() func
-tallest_idx <- which.max(soybean$PH) #index  of largest val
+tallest_idx <- which.max(soybean$plant_height) #index  of largest val
 tallest_idx
-tallest_gy <- soybean$GY[tallest_idx]
+tallest_gy <- soybean$grain_yield[tallest_idx]
 tallest_gy
 ```
 
@@ -102,12 +116,12 @@ The grain yield of the tallest soybean plant is 3304.678 kg/ha.
 
 ```{r}
 #get MHG avg
-avg_MHG <- mean(soybean$MHG)
+avg_MHG <- mean(soybean$thousand_seed_weight)
 
 #df with number of obs above avg and % obs above avg (for MHG)
 #filter for above avg MHG then calc %
 above_avg_MHG <- soybean |>
-  filter(MHG > avg_MHG) |>
+  filter(thousand_seed_weight > avg_MHG) |>
   summarize(
     #number of obs above avg
     above_avg_count = n(),
@@ -125,7 +139,7 @@ About 47.19% of observations have a thousand seed weight greater than the overal
 #get df with average GY for each cultivar 
 avg_gy_bycultivar <- soybean |> 
   group_by(Cultivar) |>
-  summarize(avg_gy = mean(GY))
+  summarize(avg_gy = mean(grain_yield))
 avg_gy_bycultivar
 
 #use which.max to get index of highest avg GY then use that to get cultivar
@@ -166,7 +180,7 @@ Combined table:
 ```{r}
 #create season column (put in front) for overall avgs to help with merging dfs
 soybean_overall_avgs <- soybean_overall_avgs |>
-  mutate(Season = "All", .before = "PH")
+  mutate(Season = "All", .before = "plant_height")
 
 #new df with overall avgs and avgs by season
 soybean_avgs_df <- rbind(soybean_overall_avgs, soybean_season_avgs)
@@ -187,14 +201,14 @@ soybean_avgs_table <- soybean_avgs_df |>
   tab_header(title = "Overall and By-Season Averages") |> 
   #learned functions for cleaning up table from: https://r-statistics.co/gt-Package.html
   cols_label(
-    PH = "Plant Height",
-    IFP = "Insertion of first pod", 
-    NLP = "Number of stems",
-    NGP = "Number of legumes per plant",
-    NGL = "Number of grains per plant",
-    NS = "Number of grains per pod",
-    MHG = "Thousand seed weight",
-    GY = "Grain yield"
+    plant_height = "Plant Height",
+    first_pod_ins = "Insertion of first pod", 
+    num_stems = "Number of stems",
+    num_legumes = "Number of legumes per plant",
+    num_grains = "Number of grains per plant",
+    num_grains_pod = "Number of grains per pod",
+    thousand_seed_weight = "Thousand seed weight",
+    grain_yield = "Grain yield"
     ) |> 
   cols_align(align = "center")
 soybean_avgs_table
@@ -204,9 +218,9 @@ soybean_avgs_table
 e.  Carry out a series of t-tests to examine whether the grain yield (GY) differs between the two seasons. State the null and the alternative hypotheses, present R output and interpret results.
 
 
-Null hypothesis: grain yield (GY) doesn't differ between season 1 and season 2 for cultivar X
+Null hypothesis: Average grain yield (GY) doesn't differ between season 1 and season 2 for cultivar X
 
-Alternative hypothesis: grain yield (GY) differs between season 1 and season 2 for cultivar X
+Alternative hypothesis: Average grain yield (GY) differs between season 1 and season 2 for cultivar X
 
 X = whichever cultivar is being filtered for (noted in comments)
 
@@ -216,33 +230,35 @@ X = whichever cultivar is being filtered for (noted in comments)
 #74K75RSF CE
 cultivar1_test <- soybean |>
   filter(Cultivar == "74K75RSF CE") |> 
-  t_test(GY ~ Season, paired = TRUE)
+  t_test(grain_yield ~ Season)
 cultivar1_test
 
 #77HO111I2X - GUAPORÉ	
 cultivar2_test <- soybean |>
   filter(Cultivar == "77HO111I2X - GUAPORÉ") |> 
-  t_test(GY ~ Season, paired = TRUE)
+  t_test(grain_yield ~ Season)
 cultivar2_test
 
 #79I81RSF IPRO	
 cultivar3_test <- soybean |>
   filter(Cultivar == "79I81RSF IPRO") |> 
-  t_test(GY ~ Season, paired = TRUE)
+  t_test(grain_yield ~ Season)
 cultivar3_test
 
 #82HO111 IPRO - HO COXIM IPRO	
 cultivar4_test <- soybean |>
   filter(Cultivar == "82HO111 IPRO - HO COXIM IPRO") |> 
-  t_test(GY ~ Season, paired = TRUE)
+  t_test(grain_yield ~ Season)
 cultivar4_test
 
 #82I78RSF IPRO
 cultivar5_test <- soybean |>
   filter(Cultivar == "82I78RSF IPRO") |> 
-  t_test(GY ~ Season, paired = TRUE)
+  t_test(grain_yield ~ Season)
 cultivar5_test
 ```
+
+For cultivars "74K75RSF CE", "79I81RSF IPRO", "82HO111 IPRO - HO COXIM IPRO", and "82I78RSF IPRO", we reject the null hypothesis that average grain yield doesn't differ between seasons since the p-values for all four were less than 0.05. However, for cultivar "77HO111I2X - GUAPORÉ", the p-value was 0.72, which is greater than 0.05, so we fail to reject the null.
 
 Problem 2 - Adult Income Dataset
 

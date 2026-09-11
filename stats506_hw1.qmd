@@ -9,7 +9,6 @@ editor: visual
 ```{r}
 #questions for prof
 #didn't reassign variable names until table part because i didn't notice, should i go back and change it?
-#3c: longest happy seq before terminating or cycling; but happy seqs don't cycle? so should we include unhappy seqs here?
 ```
 
 ```{r}
@@ -418,15 +417,15 @@ happySequence <- function(n) {
     #got idea for loop from happy numbers wiki page (https://en.wikipedia.org/wiki/Happy_number): check for repeating value
     #as long as n doesn't reach 1 or repeat a value, continue with sequence 
     while (n != 1) {
+      #get the next happy seq value 
       n <- nextHappy(n)
-      #add new value to sequence vector
+      #add value to sequence vector
       Happy_sequence <- append(Happy_sequence, n)
-      
       #if the latest value is equal to 1, then it's a happy number, return that and the sequence
       if (Happy_sequence[length(Happy_sequence)] == 1) {
         return_list = list(sequence = Happy_sequence, isHappy = TRUE)
         return(return_list)
-      #if there's a duplicate in the sequence (minus the latest appended value), then it's an unhappy number
+      #if there's a duplicate in the sequence (minus the latest appended value/the repeated value), then it's an unhappy number
       } else if (n %in% Happy_sequence[-length(Happy_sequence)]) {
         return_list = list(isHappy = FALSE)
         return(return_list)
@@ -441,34 +440,33 @@ happySequence(4)
 happySequence(1)
 ```
 
-c. Among integers 1 through 1000: How many are happy? What percentage are happy? What starting value produces the longest happy sequence before terminating or cycling?
+c. Among integers 1 through 1000: How many are happy? What percentage are happy? What starting value produces the longest happy sequence before terminating?
 ```{r}
 #empty vector to store happy numbers
 happy_nums <- c()
-#variable to keep track of the longest sequence's starting value or 'i'
+
+#variable to keep track of the longest happy sequence's length
 #start with initial value of 1, since happySequence(1) = 1
 longest_seq_val <- 1
 
-#longest_seq_i is the input value that produces the longest sequence; starting with 1 initially
+#longest_seq_i is the input value that produces the happy longest sequence; starting with 1 initially
 longest_seq_i <- 1
 
 #loop through integers 1 through 1000
-#to find the starting value that produces the longest happy sequence before terminating or cycling, update longest_seq_i depending on length of newest happySequence
+#to find the starting value that produces the longest happy sequence before terminating, update longest_seq_i depending on length of newest happySequence
 for (i in 1:1000) {
-  #see if i is happy or not
+  #is i happy or not 
   i_happy <- happySequence(i)
-  i_happy_length <- length(i_happy$sequence)
-  
-  #update longest_seq_i to keep track of which starting val that -> longest happy seq
-  #if the length of the newest sequence i_happy is greater than the current longest length
-  if (i_happy_length > longest_seq_val) {
-    longest_seq_val <- i_happy_length
-    longest_seq_i <- i
-  }
-  
-  #if i is happy, then add it to the happy nums vector
+  #if i is a happy number, add it to the happy nums vector
   if (i_happy$isHappy == TRUE) {
     happy_nums <- append(happy_nums, i)
+    #store length of sequence (for if statement conditional under it)
+    i_happy_length <- length(i_happy$sequence)
+    #check if it's sequence is longer than the current longest sequence, if it is: update the i value (longest_seq_i) and length (longest_seq_val)
+    if (i_happy_length > longest_seq_val) {
+      longest_seq_val <- i_happy_length
+      longest_seq_i <- i
+    }
   }
 }
 

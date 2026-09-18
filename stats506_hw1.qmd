@@ -158,7 +158,9 @@ d.  create table showing averages
 
 ```{r}
 #average all continuous variables (PH, etc)
-#https://dplyr.tidyverse.org/reference/summarise_all.html, https://dplyr.tidyverse.org/reference/across.html; examples for doing multiple operations at once
+#https://dplyr.tidyverse.org/reference/summarise_all.html, 
+  #https://dplyr.tidyverse.org/reference/across.html; 
+    #examples for doing multiple operations at once
 soybean_overall_avgs <- soybean |>
   #.x: current column, didn't include na.rm (these cols don't have missing vals)
   summarize(across(-c(Season, Cultivar, Repetition), ~mean(.x)))
@@ -201,7 +203,8 @@ soybean_avgs_df <- soybean_avgs_df |>
 soybean_avgs_table <- soybean_avgs_df |>
   gt() |>
   tab_header(title = "Overall and By-Season Averages") |> 
-  #learned functions for cleaning up table from: https://r-statistics.co/gt-Package.html
+  #learned functions for cleaning up table from: 
+    #https://r-statistics.co/gt-Package.html
   cols_label(
     plant_height = "Plant Height",
     first_pod_ins = "Insertion of first pod", 
@@ -225,8 +228,6 @@ Alternative hypothesis: Average grain yield (GY) differs between season 1 and se
 X = whichever cultivar is being filtered for (noted in comments)
 
 ```{r}
-#soybean; note: data looks paired; 
-
 #74K75RSF CE
 cultivar1_test <- soybean |>
   filter(Cultivar == "74K75RSF CE") |> 
@@ -266,7 +267,8 @@ a, b. import data, clean variable names
 
 ```{r}
 #import data
-adult <- read_delim("adult.data", delim = ",", col_names = FALSE, show_col_types = FALSE, na = c(" ?", "NA"))
+adult <- read_delim("adult.data", delim = ",", col_names = FALSE, 
+                    show_col_types = FALSE, na = c(" ?", "NA"))
 head(adult)
 
 #change col names 
@@ -291,7 +293,9 @@ adult <- adult |>
 head(adult)
 
 #anyNA(adult) showed there were initially no NA vals, used method below:
-#check what NA values look like using unique() (only checked cols that were said to have missing values in data description), then added variants into read_delim above
+#check what NA values look like using unique() (only checked cols that were said 
+  #to have missing values in data description), then added variants into 
+    #read_delim above
 #unique(adult$Occupation)
 #unique(adult$Employment_stat)
 #unique(adult$Native_country)
@@ -300,7 +304,8 @@ head(adult)
 c.  examine missing vals, report num of missing vals for each var
 
 ```{r}
-#across(): apply to multiple cols (can use in summarize), want to find na vals (is.na()) for each col/var, then summarize into table 
+#across(): apply to multiple cols (can use in summarize), want to find na vals 
+  #(is.na()) for each col/var, then summarize into table 
 adult_na <- adult |>
   summarize(across(everything(), ~sum(is.na(.x))))
 adult_na
@@ -316,7 +321,8 @@ num_obs_adult <- nrow(adult)
 num_obs_adult
 
 #checking variable type since initial filter gave 0 obs
-class(adult$Hrs_per_wk) #character class -> need to change to numeric for filter() to work
+#character class -> need to change to numeric for filter() to work
+class(adult$Hrs_per_wk) 
 
 #filter for people working >= 10 hrs/wk
 adult_over_10 <- adult |>
@@ -333,7 +339,7 @@ num_obs_over_10
 
 Of the 32,561 observations in the original dataset, 32,103 individuals were working at least 10 hours a week.
 
-e + f + g. Remove observations with missing values for occupation, workclass, or native country. Explain why. Eliminate any observations with: age less than 18, age greater than 90, education level identified as Preschool. Report your final sample size.
+e + f Remove observations with missing values for occupation, workclass, or native country. Explain why. Eliminate any observations with: age less than 18, age greater than 90, education level identified as Preschool.
 
 ```{r}
 #assuming we're working with adjusted dataset from part d
@@ -363,14 +369,17 @@ Problem 3 - Happy Numbers
 a.  Write a function nextHappy() that given a positive integer, computes the next value in the happy-number sequence. Be sure to provide a reasonable error on an invalid input. Be sure to document your function. Input: A positive integer Output: A positive integer Demonstrate it works by reproducing the examples.
 
 ```{r}
-#' Function to compute the next value in the happy-number sequence give a positive integer
+#' Function to compute the next value in the happy-number sequence give a 
+#' positive integer
 #' 
 #' @param pos_int a positive integer 
 #' @return the next happy-number seq value 
 nextHappy <- function(pos_int) {
-  #got idea to use %%1 from here for sanity checks: https://stackoverflow.com/questions/3476782/check-if-the-number-is-integer
+  #got idea to use %%1 from here for sanity checks: 
+    #https://stackoverflow.com/questions/3476782/check-if-the-number-is-integer
   #sanitize pos_int
-  #if it's not positive or the decimal part doesn't = 0, then stop func + display error message
+  #if it's not positive or the decimal part doesn't = 0, then stop func + 
+    #display error message
   if (!is.positive(pos_int) | (pos_int %% 1) != 0) {
     stop("pos_int must be a positive integer ")
   }
@@ -415,13 +424,17 @@ Output: A list containing:
 2.  isHappy: A logical value indicating whether the input is a happy number (TRUE if the sequence reaches 1, FALSE otherwise). Demonstrate it works by reproducing the examples.
 
 ```{r}
-#' Function to see if a given value is a happy number or unhappy number and return a Happy sequence if it is a happy number
+#' Function to see if a given value is a happy number or unhappy number and 
+#' return a Happy sequence if it is a happy number
 #' 
 #' @param pos_int a positive integer 
-#' @return a logical value that indicates if the input n is a happy number or unhappy number, and a vector with the values in the Happy sequence if n is a happy number beginning with n and ending with 1
+#' @return a logical value that indicates if the input n is a happy number or 
+#' unhappy number, and a vector with the values in the Happy sequence if n is a 
+#' happy number beginning with n and ending with 1
 happySequence <- function(n) {
   #sanitize n
-  #if it's not positive or the decimal part doesn't = 0, then stop func + display error message
+  #if it's not positive or the decimal part doesn't = 0, then stop func + 
+    #display error message
   if (!is.positive(n) | (n %% 1) != 0) {
     stop("pos_int must be a positive integer ")
   }
@@ -433,18 +446,21 @@ happySequence <- function(n) {
   if (n == 1) {
     return(list(sequence = Happy_sequence, isHappy = TRUE))
   } else {
-    #got idea for loop from happy numbers wiki page (https://en.wikipedia.org/wiki/Happy_number): check for repeating value
+    #got idea for loop from happy numbers wiki page 
+      #(https://en.wikipedia.org/wiki/Happy_number): check for repeating value
     #as long as n doesn't reach 1 or repeat a value, continue with sequence 
     while (n != 1) {
       #get the next happy seq value 
       n <- nextHappy(n)
       #add value to sequence vector
       Happy_sequence <- append(Happy_sequence, n)
-      #if the latest value is equal to 1, then it's a happy number, return that and the sequence
+      #if the latest value is equal to 1, then it's a happy number, return that 
+        #and the sequence
       if (Happy_sequence[length(Happy_sequence)] == 1) {
         return_list = list(sequence = Happy_sequence, isHappy = TRUE)
         return(return_list)
-      #if there's a duplicate in the sequence (minus the latest appended value/the repeated value), then it's an unhappy number
+      #if there's a duplicate in the sequence (minus the latest appended value/
+        #the repeated value), then it's an unhappy number
       } else if (n %in% Happy_sequence[-length(Happy_sequence)]) {
         return_list = list(isHappy = FALSE)
         return(return_list)
@@ -469,11 +485,13 @@ happy_nums <- c()
 #start with initial value of 1, since happySequence(1) = 1
 longest_seq_val <- 1
 
-#longest_seq_i is the input value that produces the happy longest sequence; starting with 1 initially
+#longest_seq_i is the input value that produces the happy longest sequence; 
+  #starting with 1 initially
 longest_seq_i <- 1
 
 #loop through integers 1 through 1000
-#to find the starting value that produces the longest happy sequence before terminating, update longest_seq_i depending on length of newest happySequence
+#to find the starting value that produces the longest happy sequence before 
+  #terminating, update longest_seq_i depending on length of newest happySequence
 for (i in 1:1000) {
   #is i happy or not 
   i_happy <- happySequence(i)
@@ -482,7 +500,8 @@ for (i in 1:1000) {
     happy_nums <- append(happy_nums, i)
     #store length of sequence (for if statement conditional under it)
     i_happy_length <- length(i_happy$sequence)
-    #check if it's sequence is longer than the current longest sequence, if it is: update the i value (longest_seq_i) and length (longest_seq_val)
+    #check if it's sequence is longer than the current longest sequence, if it 
+      #is: update the i value (longest_seq_i) and length (longest_seq_val)
     if (i_happy_length > longest_seq_val) {
       longest_seq_val <- i_happy_length
       longest_seq_i <- i
@@ -498,7 +517,7 @@ number_of_happy
 percent_of_happy <- (length(happy_nums) / 1000) * 100
 percent_of_happy
 
-#what starting value produces the longest happy sequence before terminating/cycling
+#what starting value produces the longest happy sequence before terminating
 longest_seq_i
 ```
 

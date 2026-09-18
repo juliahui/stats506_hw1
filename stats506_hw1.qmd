@@ -6,6 +6,8 @@ format:
 editor: visual
 ---
 
+github repo link: https://github.com/juliahui/stats506_hw1.git 
+
 ```{r}
 #install.packages("gt")
 #install.packages("rstatix")
@@ -214,9 +216,7 @@ soybean_avgs_table <- soybean_avgs_df |>
 soybean_avgs_table
 ```
 
-
 e.  Carry out a series of t-tests to examine whether the grain yield (GY) differs between the two seasons. State the null and the alternative hypotheses, present R output and interpret results.
-
 
 Null hypothesis: Average grain yield (GY) doesn't differ between season 1 and season 2 for cultivar X
 
@@ -297,7 +297,8 @@ head(adult)
 #unique(adult$Native_country)
 ```
 
-c. examine missing vals, report num of missing vals for each var
+c.  examine missing vals, report num of missing vals for each var
+
 ```{r}
 #across(): apply to multiple cols (can use in summarize), want to find na vals (is.na()) for each col/var, then summarize into table 
 adult_na <- adult |>
@@ -305,9 +306,10 @@ adult_na <- adult |>
 adult_na
 ```
 
-Employment_stat (or workclass in the original dataset) has 1836 missing values, occupation has 1843 missing values, and native_country has 583 missing values. 
+Employment_stat (or workclass in the original dataset) has 1836 missing values, occupation has 1843 missing values, and native_country has 583 missing values.
 
-d. Restrict the sample to individuals working at least 10 hours per week. Confirm the sample size before and after filtering.
+d.  Restrict the sample to individuals working at least 10 hours per week. Confirm the sample size before and after filtering.
+
 ```{r}
 #check sample size before filtering
 num_obs_adult <- nrow(adult)
@@ -329,9 +331,10 @@ num_obs_over_10
 
 ```
 
-Of the 32,561 observations in the original dataset, 32,103 individuals were working at least 10 hours a week. 
+Of the 32,561 observations in the original dataset, 32,103 individuals were working at least 10 hours a week.
 
 e + f + g. Remove observations with missing values for occupation, workclass, or native country. Explain why. Eliminate any observations with: age less than 18, age greater than 90, education level identified as Preschool. Report your final sample size.
+
 ```{r}
 #assuming we're working with adjusted dataset from part d
 adult_cleaned <- adult_over_10 |> 
@@ -343,23 +346,22 @@ adult_cleaned <- adult_over_10 |>
   filter(Education != "Preschool")
 ```
 
-The description of the original dataset specified that occupation, workclass, and native country were the only three variables with missing values, and removing them helps prevent issues later down the line if we want to do data analysis. 
+The description of the original dataset specified that occupation, workclass, and native country were the only three variables with missing values, and removing them helps prevent issues later down the line if we want to do data analysis.
 
-g. Report your final sample size
+g.  Report your final sample size
+
 ```{r}
 #check final sample size 
 final_sample_size <- nrow(adult_cleaned)
 final_sample_size
 ```
 
-The final sample size is 29,568. 
+The final sample size is 29,568.
 
 Problem 3 - Happy Numbers
 
-a. Write a function nextHappy() that given a positive integer, computes the next value in the happy-number sequence. Be sure to provide a reasonable error on an invalid input. Be sure to document your function.
-Input: A positive integer
-Output: A positive integer
-Demonstrate it works by reproducing the examples.
+a.  Write a function nextHappy() that given a positive integer, computes the next value in the happy-number sequence. Be sure to provide a reasonable error on an invalid input. Be sure to document your function. Input: A positive integer Output: A positive integer Demonstrate it works by reproducing the examples.
+
 ```{r}
 #' Function to compute the next value in the happy-number sequence give a positive integer
 #' 
@@ -398,7 +400,7 @@ nextHappy(19)
 nextHappy(82)
 ```
 
-b. Create a function happySequence() that returns the sequence beginning at a given number. 
+b.  Create a function happySequence() that returns the sequence beginning at a given number.
 
 Starting with n, replace it with the sum of the squares of its digits, and repeat the process until n equals 1, or it loops endlessly in a cycle that does not include 1. Those numbers for which this process ends in 1 are Happy Numbers, while those that do not end in 1 are unhappy numbers.
 
@@ -406,11 +408,12 @@ Use your nextHappy() function to perform the calculation. Be sure to provide a r
 
 Input: A positive integer
 
-Output: A list containing: 
+Output: A list containing:
 
-1. sequence: A vector containing the values in the Happy sequence, beginning with the input value and ending at 1 if the number is happy.
+1.  sequence: A vector containing the values in the Happy sequence, beginning with the input value and ending at 1 if the number is happy.
 
-2. isHappy: A logical value indicating whether the input is a happy number (TRUE if the sequence reaches 1, FALSE otherwise). Demonstrate it works by reproducing the examples.
+2.  isHappy: A logical value indicating whether the input is a happy number (TRUE if the sequence reaches 1, FALSE otherwise). Demonstrate it works by reproducing the examples.
+
 ```{r}
 #' Function to see if a given value is a happy number or unhappy number and return a Happy sequence if it is a happy number
 #' 
@@ -456,7 +459,8 @@ happySequence(4)
 happySequence(1)
 ```
 
-c. Among integers 1 through 1000: How many are happy? What percentage are happy? What starting value produces the longest happy sequence before terminating?
+c.  Among integers 1 through 1000: How many are happy? What percentage are happy? What starting value produces the longest happy sequence before terminating?
+
 ```{r}
 #empty vector to store happy numbers
 happy_nums <- c()
@@ -498,6 +502,4 @@ percent_of_happy
 longest_seq_i
 ```
 
-143 numbers are happy, which is 14.3%, and the longest happy sequence starts with 356. 
-
-
+143 numbers are happy, which is 14.3%, and the longest happy sequence starts with 356.

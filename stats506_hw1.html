@@ -2434,11 +2434,13 @@ The following object is masked from &#39;package:stats&#39;:
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#average all continuous variables (PH, etc)</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co">#https://dplyr.tidyverse.org/reference/summarise_all.html, https://dplyr.tidyverse.org/reference/across.html; examples for doing multiple operations at once</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>soybean_overall_avgs <span class="ot">&lt;-</span> soybean <span class="sc">|&gt;</span></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#.x: current column, didn&#39;t include na.rm (these cols don&#39;t have missing vals)</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="sc">-</span><span class="fu">c</span>(Season, Cultivar, Repetition), <span class="sc">~</span><span class="fu">mean</span>(.x)))</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>soybean_overall_avgs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co">#https://dplyr.tidyverse.org/reference/summarise_all.html, </span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#https://dplyr.tidyverse.org/reference/across.html; </span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">#examples for doing multiple operations at once</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>soybean_overall_avgs <span class="ot">&lt;-</span> soybean <span class="sc">|&gt;</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#.x: current column, didn&#39;t include na.rm (these cols don&#39;t have missing vals)</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="sc">-</span><span class="fu">c</span>(Season, Cultivar, Repetition), <span class="sc">~</span><span class="fu">mean</span>(.x)))</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>soybean_overall_avgs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  plant_height first_pod_ins num_stems num_legumes num_grains num_grains_pod
 1     68.38678        15.465  59.08831    135.0858   2.290844       4.071656
@@ -2486,38 +2488,40 @@ The following object is masked from &#39;package:stats&#39;:
 <span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a><span class="co">#table; got idea for making table from: https://gt.rstudio.com/, https://www.rdocumentation.org/packages/gt/versions/0.8.0/topics/gt</span></span>
-<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>soybean_avgs_table <span class="ot">&lt;-</span> soybean_avgs_df <span class="sc">|&gt;</span></span>
-<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">&quot;Overall and By-Season Averages&quot;</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>  <span class="co">#learned functions for cleaning up table from: https://r-statistics.co/gt-Package.html</span></span>
-<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
-<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">plant_height =</span> <span class="st">&quot;Plant Height&quot;</span>,</span>
-<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">first_pod_ins =</span> <span class="st">&quot;Insertion of first pod&quot;</span>, </span>
-<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_stems =</span> <span class="st">&quot;Number of stems&quot;</span>,</span>
-<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_legumes =</span> <span class="st">&quot;Number of legumes per plant&quot;</span>,</span>
-<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_grains =</span> <span class="st">&quot;Number of grains per plant&quot;</span>,</span>
-<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_grains_pod =</span> <span class="st">&quot;Number of grains per pod&quot;</span>,</span>
-<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">thousand_seed_weight =</span> <span class="st">&quot;Thousand seed weight&quot;</span>,</span>
-<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">grain_yield =</span> <span class="st">&quot;Grain yield&quot;</span></span>
-<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
-<span id="cb37-33"><a href="#cb37-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_align</span>(<span class="at">align =</span> <span class="st">&quot;center&quot;</span>)</span>
-<span id="cb37-34"><a href="#cb37-34" aria-hidden="true" tabindex="-1"></a>soybean_avgs_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a><span class="co">#table; got idea for making table from: https://gt.rstudio.com/,</span></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">#https://www.rdocumentation.org/packages/gt/versions/0.8.0/topics/gt</span></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>soybean_avgs_table <span class="ot">&lt;-</span> soybean_avgs_df <span class="sc">|&gt;</span></span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">&quot;Overall and By-Season Averages&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>  <span class="co">#learned functions for cleaning up table from: </span></span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">#https://r-statistics.co/gt-Package.html</span></span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">plant_height =</span> <span class="st">&quot;Plant Height&quot;</span>,</span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">first_pod_ins =</span> <span class="st">&quot;Insertion of first pod&quot;</span>, </span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_stems =</span> <span class="st">&quot;Number of stems&quot;</span>,</span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_legumes =</span> <span class="st">&quot;Number of legumes per plant&quot;</span>,</span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_grains =</span> <span class="st">&quot;Number of grains per plant&quot;</span>,</span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_grains_pod =</span> <span class="st">&quot;Number of grains per pod&quot;</span>,</span>
+<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">thousand_seed_weight =</span> <span class="st">&quot;Thousand seed weight&quot;</span>,</span>
+<span id="cb37-33"><a href="#cb37-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">grain_yield =</span> <span class="st">&quot;Grain yield&quot;</span></span>
+<span id="cb37-34"><a href="#cb37-34" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb37-35"><a href="#cb37-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_align</span>(<span class="at">align =</span> <span class="st">&quot;center&quot;</span>)</span>
+<span id="cb37-36"><a href="#cb37-36" aria-hidden="true" tabindex="-1"></a>soybean_avgs_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="teajentfiq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#teajentfiq table {
+<div id="odwdvhrypx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#odwdvhrypx table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#teajentfiq thead, #teajentfiq tbody, #teajentfiq tfoot, #teajentfiq tr, #teajentfiq td, #teajentfiq th {
+#odwdvhrypx thead, #odwdvhrypx tbody, #odwdvhrypx tfoot, #odwdvhrypx tr, #odwdvhrypx td, #odwdvhrypx th {
 border-style: none;
 }
-#teajentfiq p {
+#odwdvhrypx p {
 margin: 0;
 padding: 0;
 }
-#teajentfiq .gt_table {
+#odwdvhrypx .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -2542,11 +2546,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#teajentfiq .gt_caption {
+#odwdvhrypx .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#teajentfiq .gt_title {
+#odwdvhrypx .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -2557,7 +2561,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#teajentfiq .gt_subtitle {
+#odwdvhrypx .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -2568,7 +2572,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#teajentfiq .gt_heading {
+#odwdvhrypx .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -2579,12 +2583,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#teajentfiq .gt_bottom_border {
+#odwdvhrypx .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#teajentfiq .gt_col_headings {
+#odwdvhrypx .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2598,7 +2602,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#teajentfiq .gt_col_heading {
+#odwdvhrypx .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2617,7 +2621,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#teajentfiq .gt_column_spanner_outer {
+#odwdvhrypx .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2628,13 +2632,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#teajentfiq .gt_column_spanner_outer:first-child {
+#odwdvhrypx .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#teajentfiq .gt_column_spanner_outer:last-child {
+#odwdvhrypx .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#teajentfiq .gt_column_spanner {
+#odwdvhrypx .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -2645,10 +2649,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#teajentfiq .gt_spanner_row {
+#odwdvhrypx .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#teajentfiq .gt_group_heading {
+#odwdvhrypx .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2673,7 +2677,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#teajentfiq .gt_empty_group_heading {
+#odwdvhrypx .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -2687,13 +2691,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#teajentfiq .gt_from_md > :first-child {
+#odwdvhrypx .gt_from_md > :first-child {
 margin-top: 0;
 }
-#teajentfiq .gt_from_md > :last-child {
+#odwdvhrypx .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#teajentfiq .gt_row {
+#odwdvhrypx .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2711,7 +2715,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#teajentfiq .gt_stub {
+#odwdvhrypx .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2723,7 +2727,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#teajentfiq .gt_stub_row_group {
+#odwdvhrypx .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2736,13 +2740,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#teajentfiq .gt_row_group_first td {
+#odwdvhrypx .gt_row_group_first td {
 border-top-width: 2px;
 }
-#teajentfiq .gt_row_group_first th {
+#odwdvhrypx .gt_row_group_first th {
 border-top-width: 2px;
 }
-#teajentfiq .gt_summary_row {
+#odwdvhrypx .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2751,14 +2755,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#teajentfiq .gt_first_summary_row {
+#odwdvhrypx .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#teajentfiq .gt_first_summary_row.thick {
+#odwdvhrypx .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#teajentfiq .gt_last_summary_row {
+#odwdvhrypx .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2767,7 +2771,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#teajentfiq .gt_grand_summary_row {
+#odwdvhrypx .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2776,7 +2780,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#teajentfiq .gt_first_grand_summary_row {
+#odwdvhrypx .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2785,7 +2789,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#teajentfiq .gt_last_grand_summary_row_top {
+#odwdvhrypx .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2794,10 +2798,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#teajentfiq .gt_striped {
+#odwdvhrypx .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#teajentfiq .gt_table_body {
+#odwdvhrypx .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2805,7 +2809,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#teajentfiq .gt_footnotes {
+#odwdvhrypx .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2818,7 +2822,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#teajentfiq .gt_footnote {
+#odwdvhrypx .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -2826,7 +2830,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#teajentfiq .gt_sourcenotes {
+#odwdvhrypx .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2839,64 +2843,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#teajentfiq .gt_sourcenote {
+#odwdvhrypx .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#teajentfiq .gt_left {
+#odwdvhrypx .gt_left {
 text-align: left;
 }
-#teajentfiq .gt_center {
+#odwdvhrypx .gt_center {
 text-align: center;
 }
-#teajentfiq .gt_right {
+#odwdvhrypx .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#teajentfiq .gt_font_normal {
+#odwdvhrypx .gt_font_normal {
 font-weight: normal;
 }
-#teajentfiq .gt_font_bold {
+#odwdvhrypx .gt_font_bold {
 font-weight: bold;
 }
-#teajentfiq .gt_font_italic {
+#odwdvhrypx .gt_font_italic {
 font-style: italic;
 }
-#teajentfiq .gt_super {
+#odwdvhrypx .gt_super {
 font-size: 65%;
 }
-#teajentfiq .gt_footnote_marks {
+#odwdvhrypx .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#teajentfiq .gt_asterisk {
+#odwdvhrypx .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#teajentfiq .gt_indent_1 {
+#odwdvhrypx .gt_indent_1 {
 text-indent: 5px;
 }
-#teajentfiq .gt_indent_2 {
+#odwdvhrypx .gt_indent_2 {
 text-indent: 10px;
 }
-#teajentfiq .gt_indent_3 {
+#odwdvhrypx .gt_indent_3 {
 text-indent: 15px;
 }
-#teajentfiq .gt_indent_4 {
+#odwdvhrypx .gt_indent_4 {
 text-indent: 20px;
 }
-#teajentfiq .gt_indent_5 {
+#odwdvhrypx .gt_indent_5 {
 text-indent: 25px;
 }
-#teajentfiq .katex-display {
+#odwdvhrypx .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#teajentfiq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#odwdvhrypx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -3026,8 +3030,9 @@ height: 0px !important;
 <p>a, b. import data, clean variable names</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co">#import data</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>adult <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">&quot;adult.data&quot;</span>, <span class="at">delim =</span> <span class="st">&quot;,&quot;</span>, <span class="at">col_names =</span> <span class="cn">FALSE</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>, <span class="at">na =</span> <span class="fu">c</span>(<span class="st">&quot; ?&quot;</span>, <span class="st">&quot;NA&quot;</span>))</span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(adult)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>adult <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">&quot;adult.data&quot;</span>, <span class="at">delim =</span> <span class="st">&quot;,&quot;</span>, <span class="at">col_names =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">show_col_types =</span> <span class="cn">FALSE</span>, <span class="at">na =</span> <span class="fu">c</span>(<span class="st">&quot; ?&quot;</span>, <span class="st">&quot;NA&quot;</span>))</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(adult)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 15
      X1 X2     X3    X4    X5    X6    X7    X8    X9    X10   X11   X12   X13  
@@ -3075,19 +3080,22 @@ height: 0px !important;
 #   Native_country &lt;chr&gt;, Income &lt;chr&gt;</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co">#anyNA(adult) showed there were initially no NA vals, used method below:</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="co">#check what NA values look like using unique() (only checked cols that were said to have missing values in data description), then added variants into read_delim above</span></span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="co">#unique(adult$Occupation)</span></span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="co">#unique(adult$Employment_stat)</span></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="co">#unique(adult$Native_country)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="co">#check what NA values look like using unique() (only checked cols that were said </span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#to have missing values in data description), then added variants into </span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">#read_delim above</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="co">#unique(adult$Occupation)</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a><span class="co">#unique(adult$Employment_stat)</span></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="co">#unique(adult$Native_country)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="3" type="a">
 <li>examine missing vals, report num of missing vals for each var</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co">#across(): apply to multiple cols (can use in summarize), want to find na vals (is.na()) for each col/var, then summarize into table </span></span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>adult_na <span class="ot">&lt;-</span> adult <span class="sc">|&gt;</span></span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span><span class="fu">sum</span>(<span class="fu">is.na</span>(.x))))</span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>adult_na</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co">#across(): apply to multiple cols (can use in summarize), want to find na vals </span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#(is.na()) for each col/var, then summarize into table </span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>adult_na <span class="ot">&lt;-</span> adult <span class="sc">|&gt;</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span><span class="fu">sum</span>(<span class="fu">is.na</span>(.x))))</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>adult_na</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 15
     Age Employment_stat fnlwgt Education Education_yrs Marital_stat Occupation
@@ -3110,7 +3118,8 @@ height: 0px !important;
 <pre><code>[1] 32561</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co">#checking variable type since initial filter gave 0 obs</span></span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(adult<span class="sc">$</span>Hrs_per_wk) <span class="co">#character class -&gt; need to change to numeric for filter() to work</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="co">#character class -&gt; need to change to numeric for filter() to work</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(adult<span class="sc">$</span>Hrs_per_wk) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] &quot;character&quot;</code></pre>
 </div>
@@ -3158,40 +3167,43 @@ height: 0px !important;
 <li>Write a function nextHappy() that given a positive integer, computes the next value in the happy-number sequence. Be sure to provide a reasonable error on an invalid input. Be sure to document your function. Input: A positive integer Output: A positive integer Demonstrate it works by reproducing the examples.</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Function to compute the next value in the happy-number sequence give a positive integer</span></span>
-<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; </span></span>
-<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param pos_int a positive integer </span></span>
-<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return the next happy-number seq value </span></span>
-<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>nextHappy <span class="ot">&lt;-</span> <span class="cf">function</span>(pos_int) {</span>
-<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#got idea to use %%1 from here for sanity checks: https://stackoverflow.com/questions/3476782/check-if-the-number-is-integer</span></span>
-<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#sanitize pos_int</span></span>
-<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#if it&#39;s not positive or the decimal part doesn&#39;t = 0, then stop func + display error message</span></span>
-<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.positive</span>(pos_int) <span class="sc">|</span> (pos_int <span class="sc">%%</span> <span class="dv">1</span>) <span class="sc">!=</span> <span class="dv">0</span>) {</span>
-<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;pos_int must be a positive integer &quot;</span>)</span>
-<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">#empty vector to store squared values in</span></span>
-<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a>  squares <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Function to compute the next value in the happy-number sequence give a </span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; positive integer</span></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param pos_int a positive integer </span></span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return the next happy-number seq value </span></span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>nextHappy <span class="ot">&lt;-</span> <span class="cf">function</span>(pos_int) {</span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#got idea to use %%1 from here for sanity checks: </span></span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">#https://stackoverflow.com/questions/3476782/check-if-the-number-is-integer</span></span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#sanitize pos_int</span></span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#if it&#39;s not positive or the decimal part doesn&#39;t = 0, then stop func + </span></span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">#display error message</span></span>
+<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.positive</span>(pos_int) <span class="sc">|</span> (pos_int <span class="sc">%%</span> <span class="dv">1</span>) <span class="sc">!=</span> <span class="dv">0</span>) {</span>
+<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;pos_int must be a positive integer &quot;</span>)</span>
+<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb64-15"><a href="#cb64-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb64-16"><a href="#cb64-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#loop through each digit of the pos_int</span></span>
-<span id="cb64-17"><a href="#cb64-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span>(pos_int <span class="sc">!=</span> <span class="dv">0</span>) {</span>
-<span id="cb64-18"><a href="#cb64-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">#get unit digit</span></span>
-<span id="cb64-19"><a href="#cb64-19" aria-hidden="true" tabindex="-1"></a>    digit <span class="ot">&lt;-</span> pos_int <span class="sc">%%</span> <span class="dv">10</span></span>
-<span id="cb64-20"><a href="#cb64-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">#square unit digit</span></span>
-<span id="cb64-21"><a href="#cb64-21" aria-hidden="true" tabindex="-1"></a>    digit_squared <span class="ot">&lt;-</span> digit<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb64-22"><a href="#cb64-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">#add squared value to vector</span></span>
-<span id="cb64-23"><a href="#cb64-23" aria-hidden="true" tabindex="-1"></a>    squares <span class="ot">&lt;-</span> <span class="fu">append</span>(squares, digit_squared)</span>
-<span id="cb64-24"><a href="#cb64-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">#update pos_int to get rid of unit digit</span></span>
-<span id="cb64-25"><a href="#cb64-25" aria-hidden="true" tabindex="-1"></a>    pos_int <span class="ot">&lt;-</span> <span class="fu">floor</span>(pos_int <span class="sc">/</span> <span class="dv">10</span>)</span>
-<span id="cb64-26"><a href="#cb64-26" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb64-27"><a href="#cb64-27" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb64-28"><a href="#cb64-28" aria-hidden="true" tabindex="-1"></a>  <span class="co">#get sum of all the squared digits</span></span>
-<span id="cb64-29"><a href="#cb64-29" aria-hidden="true" tabindex="-1"></a>  sum_of_squares <span class="ot">&lt;-</span> <span class="fu">sum</span>(squares)</span>
-<span id="cb64-30"><a href="#cb64-30" aria-hidden="true" tabindex="-1"></a>  <span class="co">#print final sum a.k.a. next happy-number sequence value</span></span>
-<span id="cb64-31"><a href="#cb64-31" aria-hidden="true" tabindex="-1"></a>  sum_of_squares</span>
-<span id="cb64-32"><a href="#cb64-32" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb64-33"><a href="#cb64-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb64-34"><a href="#cb64-34" aria-hidden="true" tabindex="-1"></a><span class="fu">nextHappy</span>(<span class="dv">19</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb64-16"><a href="#cb64-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#empty vector to store squared values in</span></span>
+<span id="cb64-17"><a href="#cb64-17" aria-hidden="true" tabindex="-1"></a>  squares <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb64-18"><a href="#cb64-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb64-19"><a href="#cb64-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">#loop through each digit of the pos_int</span></span>
+<span id="cb64-20"><a href="#cb64-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span>(pos_int <span class="sc">!=</span> <span class="dv">0</span>) {</span>
+<span id="cb64-21"><a href="#cb64-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">#get unit digit</span></span>
+<span id="cb64-22"><a href="#cb64-22" aria-hidden="true" tabindex="-1"></a>    digit <span class="ot">&lt;-</span> pos_int <span class="sc">%%</span> <span class="dv">10</span></span>
+<span id="cb64-23"><a href="#cb64-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">#square unit digit</span></span>
+<span id="cb64-24"><a href="#cb64-24" aria-hidden="true" tabindex="-1"></a>    digit_squared <span class="ot">&lt;-</span> digit<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb64-25"><a href="#cb64-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">#add squared value to vector</span></span>
+<span id="cb64-26"><a href="#cb64-26" aria-hidden="true" tabindex="-1"></a>    squares <span class="ot">&lt;-</span> <span class="fu">append</span>(squares, digit_squared)</span>
+<span id="cb64-27"><a href="#cb64-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">#update pos_int to get rid of unit digit</span></span>
+<span id="cb64-28"><a href="#cb64-28" aria-hidden="true" tabindex="-1"></a>    pos_int <span class="ot">&lt;-</span> <span class="fu">floor</span>(pos_int <span class="sc">/</span> <span class="dv">10</span>)</span>
+<span id="cb64-29"><a href="#cb64-29" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb64-30"><a href="#cb64-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb64-31"><a href="#cb64-31" aria-hidden="true" tabindex="-1"></a>  <span class="co">#get sum of all the squared digits</span></span>
+<span id="cb64-32"><a href="#cb64-32" aria-hidden="true" tabindex="-1"></a>  sum_of_squares <span class="ot">&lt;-</span> <span class="fu">sum</span>(squares)</span>
+<span id="cb64-33"><a href="#cb64-33" aria-hidden="true" tabindex="-1"></a>  <span class="co">#print final sum a.k.a. next happy-number sequence value</span></span>
+<span id="cb64-34"><a href="#cb64-34" aria-hidden="true" tabindex="-1"></a>  sum_of_squares</span>
+<span id="cb64-35"><a href="#cb64-35" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb64-36"><a href="#cb64-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-37"><a href="#cb64-37" aria-hidden="true" tabindex="-1"></a><span class="fu">nextHappy</span>(<span class="dv">19</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 82</code></pre>
 </div>
@@ -3212,46 +3224,53 @@ height: 0px !important;
 <li><p>isHappy: A logical value indicating whether the input is a happy number (TRUE if the sequence reaches 1, FALSE otherwise). Demonstrate it works by reproducing the examples.</p></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Function to see if a given value is a happy number or unhappy number and return a Happy sequence if it is a happy number</span></span>
-<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; </span></span>
-<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param pos_int a positive integer </span></span>
-<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return a logical value that indicates if the input n is a happy number or unhappy number, and a vector with the values in the Happy sequence if n is a happy number beginning with n and ending with 1</span></span>
-<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>happySequence <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
-<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#sanitize n</span></span>
-<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#if it&#39;s not positive or the decimal part doesn&#39;t = 0, then stop func + display error message</span></span>
-<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.positive</span>(n) <span class="sc">|</span> (n <span class="sc">%%</span> <span class="dv">1</span>) <span class="sc">!=</span> <span class="dv">0</span>) {</span>
-<span id="cb68-9"><a href="#cb68-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;pos_int must be a positive integer &quot;</span>)</span>
-<span id="cb68-10"><a href="#cb68-10" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb68-11"><a href="#cb68-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb68-12"><a href="#cb68-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#vector for sequence starting with initial input value</span></span>
-<span id="cb68-13"><a href="#cb68-13" aria-hidden="true" tabindex="-1"></a>  Happy_sequence <span class="ot">=</span> <span class="fu">c</span>(n)</span>
-<span id="cb68-14"><a href="#cb68-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb68-15"><a href="#cb68-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#if the initial input is 1, return the sequence </span></span>
-<span id="cb68-16"><a href="#cb68-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (n <span class="sc">==</span> <span class="dv">1</span>) {</span>
-<span id="cb68-17"><a href="#cb68-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">sequence =</span> Happy_sequence, <span class="at">isHappy =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb68-18"><a href="#cb68-18" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb68-19"><a href="#cb68-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">#got idea for loop from happy numbers wiki page (https://en.wikipedia.org/wiki/Happy_number): check for repeating value</span></span>
-<span id="cb68-20"><a href="#cb68-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">#as long as n doesn&#39;t reach 1 or repeat a value, continue with sequence </span></span>
-<span id="cb68-21"><a href="#cb68-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> (n <span class="sc">!=</span> <span class="dv">1</span>) {</span>
-<span id="cb68-22"><a href="#cb68-22" aria-hidden="true" tabindex="-1"></a>      <span class="co">#get the next happy seq value </span></span>
-<span id="cb68-23"><a href="#cb68-23" aria-hidden="true" tabindex="-1"></a>      n <span class="ot">&lt;-</span> <span class="fu">nextHappy</span>(n)</span>
-<span id="cb68-24"><a href="#cb68-24" aria-hidden="true" tabindex="-1"></a>      <span class="co">#add value to sequence vector</span></span>
-<span id="cb68-25"><a href="#cb68-25" aria-hidden="true" tabindex="-1"></a>      Happy_sequence <span class="ot">&lt;-</span> <span class="fu">append</span>(Happy_sequence, n)</span>
-<span id="cb68-26"><a href="#cb68-26" aria-hidden="true" tabindex="-1"></a>      <span class="co">#if the latest value is equal to 1, then it&#39;s a happy number, return that and the sequence</span></span>
-<span id="cb68-27"><a href="#cb68-27" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (Happy_sequence[<span class="fu">length</span>(Happy_sequence)] <span class="sc">==</span> <span class="dv">1</span>) {</span>
-<span id="cb68-28"><a href="#cb68-28" aria-hidden="true" tabindex="-1"></a>        return_list <span class="ot">=</span> <span class="fu">list</span>(<span class="at">sequence =</span> Happy_sequence, <span class="at">isHappy =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb68-29"><a href="#cb68-29" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(return_list)</span>
-<span id="cb68-30"><a href="#cb68-30" aria-hidden="true" tabindex="-1"></a>      <span class="co">#if there&#39;s a duplicate in the sequence (minus the latest appended value/the repeated value), then it&#39;s an unhappy number</span></span>
-<span id="cb68-31"><a href="#cb68-31" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> <span class="cf">if</span> (n <span class="sc">%in%</span> Happy_sequence[<span class="sc">-</span><span class="fu">length</span>(Happy_sequence)]) {</span>
-<span id="cb68-32"><a href="#cb68-32" aria-hidden="true" tabindex="-1"></a>        return_list <span class="ot">=</span> <span class="fu">list</span>(<span class="at">isHappy =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb68-33"><a href="#cb68-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(return_list)</span>
-<span id="cb68-34"><a href="#cb68-34" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb68-35"><a href="#cb68-35" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb68-36"><a href="#cb68-36" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb68-37"><a href="#cb68-37" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb68-38"><a href="#cb68-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb68-39"><a href="#cb68-39" aria-hidden="true" tabindex="-1"></a><span class="co">#examples</span></span>
-<span id="cb68-40"><a href="#cb68-40" aria-hidden="true" tabindex="-1"></a><span class="fu">happySequence</span>(<span class="dv">19</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Function to see if a given value is a happy number or unhappy number and </span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; return a Happy sequence if it is a happy number</span></span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param pos_int a positive integer </span></span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return a logical value that indicates if the input n is a happy number or </span></span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; unhappy number, and a vector with the values in the Happy sequence if n is a </span></span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; happy number beginning with n and ending with 1</span></span>
+<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a>happySequence <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb68-9"><a href="#cb68-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#sanitize n</span></span>
+<span id="cb68-10"><a href="#cb68-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#if it&#39;s not positive or the decimal part doesn&#39;t = 0, then stop func + </span></span>
+<span id="cb68-11"><a href="#cb68-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">#display error message</span></span>
+<span id="cb68-12"><a href="#cb68-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.positive</span>(n) <span class="sc">|</span> (n <span class="sc">%%</span> <span class="dv">1</span>) <span class="sc">!=</span> <span class="dv">0</span>) {</span>
+<span id="cb68-13"><a href="#cb68-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;pos_int must be a positive integer &quot;</span>)</span>
+<span id="cb68-14"><a href="#cb68-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb68-15"><a href="#cb68-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb68-16"><a href="#cb68-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#vector for sequence starting with initial input value</span></span>
+<span id="cb68-17"><a href="#cb68-17" aria-hidden="true" tabindex="-1"></a>  Happy_sequence <span class="ot">=</span> <span class="fu">c</span>(n)</span>
+<span id="cb68-18"><a href="#cb68-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb68-19"><a href="#cb68-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">#if the initial input is 1, return the sequence </span></span>
+<span id="cb68-20"><a href="#cb68-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (n <span class="sc">==</span> <span class="dv">1</span>) {</span>
+<span id="cb68-21"><a href="#cb68-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">sequence =</span> Happy_sequence, <span class="at">isHappy =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb68-22"><a href="#cb68-22" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb68-23"><a href="#cb68-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">#got idea for loop from happy numbers wiki page </span></span>
+<span id="cb68-24"><a href="#cb68-24" aria-hidden="true" tabindex="-1"></a>      <span class="co">#(https://en.wikipedia.org/wiki/Happy_number): check for repeating value</span></span>
+<span id="cb68-25"><a href="#cb68-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">#as long as n doesn&#39;t reach 1 or repeat a value, continue with sequence </span></span>
+<span id="cb68-26"><a href="#cb68-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> (n <span class="sc">!=</span> <span class="dv">1</span>) {</span>
+<span id="cb68-27"><a href="#cb68-27" aria-hidden="true" tabindex="-1"></a>      <span class="co">#get the next happy seq value </span></span>
+<span id="cb68-28"><a href="#cb68-28" aria-hidden="true" tabindex="-1"></a>      n <span class="ot">&lt;-</span> <span class="fu">nextHappy</span>(n)</span>
+<span id="cb68-29"><a href="#cb68-29" aria-hidden="true" tabindex="-1"></a>      <span class="co">#add value to sequence vector</span></span>
+<span id="cb68-30"><a href="#cb68-30" aria-hidden="true" tabindex="-1"></a>      Happy_sequence <span class="ot">&lt;-</span> <span class="fu">append</span>(Happy_sequence, n)</span>
+<span id="cb68-31"><a href="#cb68-31" aria-hidden="true" tabindex="-1"></a>      <span class="co">#if the latest value is equal to 1, then it&#39;s a happy number, return that </span></span>
+<span id="cb68-32"><a href="#cb68-32" aria-hidden="true" tabindex="-1"></a>        <span class="co">#and the sequence</span></span>
+<span id="cb68-33"><a href="#cb68-33" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (Happy_sequence[<span class="fu">length</span>(Happy_sequence)] <span class="sc">==</span> <span class="dv">1</span>) {</span>
+<span id="cb68-34"><a href="#cb68-34" aria-hidden="true" tabindex="-1"></a>        return_list <span class="ot">=</span> <span class="fu">list</span>(<span class="at">sequence =</span> Happy_sequence, <span class="at">isHappy =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb68-35"><a href="#cb68-35" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(return_list)</span>
+<span id="cb68-36"><a href="#cb68-36" aria-hidden="true" tabindex="-1"></a>      <span class="co">#if there&#39;s a duplicate in the sequence (minus the latest appended value/</span></span>
+<span id="cb68-37"><a href="#cb68-37" aria-hidden="true" tabindex="-1"></a>        <span class="co">#the repeated value), then it&#39;s an unhappy number</span></span>
+<span id="cb68-38"><a href="#cb68-38" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> <span class="cf">if</span> (n <span class="sc">%in%</span> Happy_sequence[<span class="sc">-</span><span class="fu">length</span>(Happy_sequence)]) {</span>
+<span id="cb68-39"><a href="#cb68-39" aria-hidden="true" tabindex="-1"></a>        return_list <span class="ot">=</span> <span class="fu">list</span>(<span class="at">isHappy =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb68-40"><a href="#cb68-40" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(return_list)</span>
+<span id="cb68-41"><a href="#cb68-41" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb68-42"><a href="#cb68-42" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb68-43"><a href="#cb68-43" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb68-44"><a href="#cb68-44" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb68-45"><a href="#cb68-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-46"><a href="#cb68-46" aria-hidden="true" tabindex="-1"></a><span class="co">#examples</span></span>
+<span id="cb68-47"><a href="#cb68-47" aria-hidden="true" tabindex="-1"></a><span class="fu">happySequence</span>(<span class="dv">19</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$sequence
 [1]  19  82  68 100   1
@@ -3299,17 +3318,18 @@ $isHappy
 <span id="cb74-20"><a href="#cb74-20" aria-hidden="true" tabindex="-1"></a>    happy_nums <span class="ot">&lt;-</span> <span class="fu">append</span>(happy_nums, i)</span>
 <span id="cb74-21"><a href="#cb74-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">#store length of sequence (for if statement conditional under it)</span></span>
 <span id="cb74-22"><a href="#cb74-22" aria-hidden="true" tabindex="-1"></a>    i_happy_length <span class="ot">&lt;-</span> <span class="fu">length</span>(i_happy<span class="sc">$</span>sequence)</span>
-<span id="cb74-23"><a href="#cb74-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">#check if it&#39;s sequence is longer than the current longest sequence, if it is: update the i value (longest_seq_i) and length (longest_seq_val)</span></span>
-<span id="cb74-24"><a href="#cb74-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (i_happy_length <span class="sc">&gt;</span> longest_seq_val) {</span>
-<span id="cb74-25"><a href="#cb74-25" aria-hidden="true" tabindex="-1"></a>      longest_seq_val <span class="ot">&lt;-</span> i_happy_length</span>
-<span id="cb74-26"><a href="#cb74-26" aria-hidden="true" tabindex="-1"></a>      longest_seq_i <span class="ot">&lt;-</span> i</span>
-<span id="cb74-27"><a href="#cb74-27" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb74-28"><a href="#cb74-28" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb74-29"><a href="#cb74-29" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb74-30"><a href="#cb74-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb74-31"><a href="#cb74-31" aria-hidden="true" tabindex="-1"></a><span class="co">#how many are happy</span></span>
-<span id="cb74-32"><a href="#cb74-32" aria-hidden="true" tabindex="-1"></a>number_of_happy <span class="ot">&lt;-</span> <span class="fu">length</span>(happy_nums)</span>
-<span id="cb74-33"><a href="#cb74-33" aria-hidden="true" tabindex="-1"></a>number_of_happy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb74-23"><a href="#cb74-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">#check if it&#39;s sequence is longer than the current longest sequence, if it </span></span>
+<span id="cb74-24"><a href="#cb74-24" aria-hidden="true" tabindex="-1"></a>      <span class="co">#is: update the i value (longest_seq_i) and length (longest_seq_val)</span></span>
+<span id="cb74-25"><a href="#cb74-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (i_happy_length <span class="sc">&gt;</span> longest_seq_val) {</span>
+<span id="cb74-26"><a href="#cb74-26" aria-hidden="true" tabindex="-1"></a>      longest_seq_val <span class="ot">&lt;-</span> i_happy_length</span>
+<span id="cb74-27"><a href="#cb74-27" aria-hidden="true" tabindex="-1"></a>      longest_seq_i <span class="ot">&lt;-</span> i</span>
+<span id="cb74-28"><a href="#cb74-28" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb74-29"><a href="#cb74-29" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb74-30"><a href="#cb74-30" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb74-31"><a href="#cb74-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-32"><a href="#cb74-32" aria-hidden="true" tabindex="-1"></a><span class="co">#how many are happy</span></span>
+<span id="cb74-33"><a href="#cb74-33" aria-hidden="true" tabindex="-1"></a>number_of_happy <span class="ot">&lt;-</span> <span class="fu">length</span>(happy_nums)</span>
+<span id="cb74-34"><a href="#cb74-34" aria-hidden="true" tabindex="-1"></a>number_of_happy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 143</code></pre>
 </div>
@@ -3319,7 +3339,7 @@ $isHappy
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 14.3</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="co">#what starting value produces the longest happy sequence before terminating/cycling</span></span>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="co">#what starting value produces the longest happy sequence before terminating</span></span>
 <span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>longest_seq_i</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 356</code></pre>

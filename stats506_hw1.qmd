@@ -199,7 +199,8 @@ soybean_avgs_df <- soybean_avgs_df |>
     )
   )
 
-#table; got idea for making table from: https://gt.rstudio.com/, https://www.rdocumentation.org/packages/gt/versions/0.8.0/topics/gt
+#table; got idea for making table from: https://gt.rstudio.com/,
+  #https://www.rdocumentation.org/packages/gt/versions/0.8.0/topics/gt
 soybean_avgs_table <- soybean_avgs_df |>
   gt() |>
   tab_header(title = "Overall and By-Season Averages") |> 

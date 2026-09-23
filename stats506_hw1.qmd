@@ -3,10 +3,10 @@ title: "stats506_hw1"
 format:
   html:
     embed-resources: true
-editor: visual
+editor: source
 ---
 
-github repo link: https://github.com/juliahui/stats506_hw1.git 
+github repo link: https://github.com/juliahui/stats506_hw1.git
 
 ```{r}
 #install.packages("gt")
